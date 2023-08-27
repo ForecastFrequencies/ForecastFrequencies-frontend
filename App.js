@@ -1,12 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { PaperProvider, Button } from 'react-native-paper';
 
 export default function App() {
+  
   return (
-    <View style={styles.container}>
-      <Text>welcome to the Forecast Frequencies app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <View style={styles.container}>
+        <Text>Welcome to the Forecast Frequencies app!</Text>
+        <Button
+          icon="camera"
+          mode="contained"
+          onPress={() => console.log('Pressed')}
+        >
+          Press me
+        </Button>
+        <StatusBar style="auto" />
+     
+      </View>
+  
+
+    </PaperProvider>
   );
 }
 
