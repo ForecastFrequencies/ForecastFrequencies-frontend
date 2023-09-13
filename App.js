@@ -1,25 +1,35 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { PaperProvider, Button } from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import Login from './src/components/login/Login';
+import Home from './src/components/home/Home';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+
+  const [showHomeScreen, setShowHomeScreen] = useState(false);
   return (
-    <PaperProvider>
-      <View style={styles.container}>
-        <Text>Welcome to the Forecast Frequencies app!</Text>
-        <Login />
-        <Button
-          icon="camera"
-          mode="contained"
-          onPress={() => console.log('Pressed')}
-        >
-          Home screen
-        </Button>
-        <StatusBar style="auto" />
-      </View>
-    </PaperProvider>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {/* <View style={styles.container}>
+          <Text>Welcome to the Forecast Frequencies app!</Text> */}
+          {/* <StatusBar style="auto" /> */}
+          <Stack.Screen
+            name="Login"
+            component={Login}
+           />
+          <Stack.Screen
+            name="Home"
+            component={Home}
+           />
+        {/* </View> */}
+      </Stack.Navigator>
+    </NavigationContainer>
+
   );
 }
 
