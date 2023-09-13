@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -10,6 +10,7 @@ import Home from './src/components/home/Home';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+
   const [showHomeScreen, setShowHomeScreen] = useState(false);
   return (
     <NavigationContainer>
@@ -28,6 +29,7 @@ export default function App() {
         {/* </View> */}
       </Stack.Navigator>
     </NavigationContainer>
+
   );
 }
 
