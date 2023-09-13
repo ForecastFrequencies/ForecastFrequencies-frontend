@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { PaperProvider, Button } from 'react-native-paper';
+import { PaperProvider } from 'react-native-paper';
 import Login from './src/components/login/Login';
 
 export default function App() {
@@ -10,13 +10,13 @@ export default function App() {
       <View style={styles.container}>
         <Text>Welcome to the Forecast Frequencies app!</Text>
         <Login />
-        <Button
+        {/* <Button
           icon="camera"
           mode="contained"
           onPress={() => console.log('Pressed')}
         >
           Home screen
-        </Button>
+        </Button> */}
         <StatusBar style="auto" />
       </View>
     </PaperProvider>
