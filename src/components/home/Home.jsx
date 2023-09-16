@@ -26,7 +26,6 @@ const Home = () => {
             <SafeAreaView style={styles.container}>
                 <SegmentedButtons
                     value='hourly'
-                    // onValueChange={setValue}
                     buttons={[
                         {
                             value: 'hourly',
