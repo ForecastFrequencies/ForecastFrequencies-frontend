@@ -5,7 +5,6 @@ import VerticalText from 'react-native-vertical-text';
 
 
 const Home = () => {
-    // const [alignContent, setAlignContent] = useState('flex-start');
     return (
         <PaperProvider>
             <View style={[styles.row, styles.spaceBetween]}>
