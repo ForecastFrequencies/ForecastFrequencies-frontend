@@ -1,33 +1,29 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { PaperProvider } from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import Login from './src/components/login/Login';
+import Home from './src/components/home/Home';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+ 
   return (
-    <PaperProvider>
-      <View style={styles.container}>
-        <Text>Welcome to the Forecast Frequencies app!</Text>
-        <Login />
-        {/* <Button
-          icon="camera"
-          mode="contained"
-          onPress={() => console.log('Pressed')}
-        >
-          Home screen
-        </Button> */}
-        <StatusBar style="auto" />
-      </View>
-    </PaperProvider>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Home" component={Home} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });
