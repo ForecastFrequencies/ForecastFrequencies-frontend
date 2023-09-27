@@ -1,11 +1,40 @@
 import { StyleSheet, View, SafeAreaView } from 'react-native';
-import React from 'react';
-import { PaperProvider, Text, SegmentedButtons } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import * as SecureStore from 'expo-secure-store';
+import { Text, SegmentedButtons } from 'react-native-paper';
+import axios from 'axios';
+import * as constants from '../../common/constants'
 import VerticalText from 'react-native-vertical-text';
 
 const Home = () => {
+  const [token, setToken] = useState('');
+  const [userData, setUserData] = useState('');
+
+  const getUserData = (async (token) =>{
+    try {
+      const response = await axios.get(`${constants.SERVER_URL}/spotify-user?token=${token}`);
+      console.log(response.data);
+      setUserData(response.data);
+    }
+    catch (error) {
+      console.error('Failed to fetch user data:', error);
+    }
+
+  })
+
+  const getToken = () => {
+    SecureStore.getItemAsync('accessToken').then((token) => {
+      setToken(token);
+      getUserData(token);
+    });
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
   return (
-    <PaperProvider>
+    <>
       <View style={[styles.row, styles.spaceBetween]}>
         <View>
           <Text variant="headlineMedium">Good Morning Nick!</Text>
@@ -40,8 +69,11 @@ const Home = () => {
             { value: '5day', label: '5-day' },
           ]}
         />
+        <View>
+          {userData ? (<Text>{userData.display_name}</Text>) : (<Text>Loading...</Text>)}
+        </View>
       </SafeAreaView>
-    </PaperProvider>
+    </>
   );
 };
 
