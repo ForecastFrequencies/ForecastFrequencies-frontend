@@ -1,5 +1,5 @@
 import { StyleSheet, View, SafeAreaView } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PaperProvider, Text, SegmentedButtons } from 'react-native-paper';
 import VerticalText from 'react-native-vertical-text';
 import Constants from 'expo-constants';
