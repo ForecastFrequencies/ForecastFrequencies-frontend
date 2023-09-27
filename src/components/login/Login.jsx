@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import {
   SafeAreaView,
   StyleSheet,
@@ -13,7 +13,8 @@ import {
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import * as WebBrowser from 'expo-web-browser';
-import Constants from 'expo-constants';
+import * as SecureStore from 'expo-secure-store';
+import * as Constants from '../../common/constants';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {
   makeRedirectUri,
@@ -24,7 +25,6 @@ import {
 // Initialize the WebBrowser module
 WebBrowser.maybeCompleteAuthSession();
 
-const CLIENT_ID = '457b88f6f5dd407a8683c27c824f1074';
 const REDIRECT_URI = makeRedirectUri({
   // Use the default path
   useProxy: true,
@@ -34,18 +34,13 @@ const discovery = {
   authorizationEndpoint: 'https://accounts.spotify.com/authorize',
   tokenEndpoint: 'https://accounts.spotify.com/api/token',
 };
-
-const SERVER_URL = `http://${Constants.expoGoConfig.debuggerHost
-  ?.split(':')
-  .shift()}:3000`;
-
 export default function Login({ navigation }) {
   const [request, response, promptAsync] = useAuthRequest(
     {
-      clientId: CLIENT_ID,
+      clientId: Constants.CLIENT_ID,
       redirectUri: REDIRECT_URI,
       responseType: ResponseType.Code,
-      scopes: ['user-read-email', 'playlist-modify-public'], // example scopes, add according to your app's requirement
+      scopes: ['user-read-email', 'playlist-modify-public', 'ugc-image-upload'], // example scopes, add according to your app's requirement
       usePKCE: false,
     },
     discovery
@@ -60,12 +55,9 @@ export default function Login({ navigation }) {
     if (response?.type === 'success') {
       setLoading(true);
       const { code } = response.params;
-      console.log('code: ', code);
-      console.log('redirect uri: ', REDIRECT_URI);
-      console.log('server-url: ', SERVER_URL);
 
       //Fetch the access token from your Express server
-      fetch(`${SERVER_URL}/get-token`, {
+      fetch(`${Constants.SERVER_URL}/get-token`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,9 +69,10 @@ export default function Login({ navigation }) {
           const { accessToken, refreshToken } = data;
           console.log('Access Token:', accessToken);
           console.log('Refresh Token:', refreshToken);
+          SecureStore.setItemAsync('accessToken', accessToken);
+          SecureStore.setItemAsync('refreshToken', refreshToken);
           navigation.navigate('Home');
           setLoading(false);
-          // Handle the tokens (e.g., save them, make further API calls)
         })
         .catch((error) => {
           console.error('Error fetching tokens:', error);
@@ -92,12 +85,17 @@ export default function Login({ navigation }) {
     setTimeout(() => {
       setShowSplash(false);
     }, 3000);
+    //use logic here to determine if refresh token already exists in asyncstorage and if it does bypass login screen 
   }, []);
 
   if (showSplash) {
     return (
       <View style={styles.splashContainer}>
-        <Text style={styles.splashText}>Welcome to ForeCastFrequencies</Text>
+        <Image
+          source={require('../../../assets/cloud.png')}
+          style={styles.logo}
+        />
+        <Text style={styles.splashText}>ForeCastFrequencies</Text>
       </View>
     );
   }
@@ -162,7 +160,7 @@ Login.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }),
-}
+};
 
 const styles = StyleSheet.create({
   login: {
