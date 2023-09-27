@@ -12,7 +12,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-          <Stack.Screen
+             <Stack.Screen
             name="Login"
             component={Login}
            />
@@ -22,7 +22,6 @@ export default function App() {
            />
       </Stack.Navigator>
     </NavigationContainer>
-
   );
 }
 

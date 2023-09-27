@@ -1,6 +1,9 @@
 import { StyleSheet, View, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { PaperProvider, Text, SegmentedButtons } from 'react-native-paper';
+import * as SecureStore from 'expo-secure-store';
+import axios from 'axios';
+import * as constants from '../../common/constants'
 import VerticalText from 'react-native-vertical-text';
 import Constants from 'expo-constants';
 
@@ -8,7 +11,7 @@ const SERVER_URL = `http://${Constants.expoGoConfig.debuggerHost
   ?.split(':')
   .shift()}:3000`;
 
-const Home = ({ userName = 'Nick', location = '11355' }) => {
+const Home = ({ userName = 'Nick', location = '1355' }) => {
   const [apiResponse, setApiResponse] = useState("");
   const date = new Date();
 
@@ -30,6 +33,33 @@ const Home = ({ userName = 'Nick', location = '11355' }) => {
         console.error('Error retrieving weather data:', error);
       });
   }, []);
+
+  const [token, setToken] = useState('');
+  const [userData, setUserData] = useState('');
+
+  const getUserData = (async (token) => {
+    try {
+      const response = await axios.get(`${constants.SERVER_URL}/spotify-user?token=${token}`);
+      console.log(response.data);
+      setUserData(response.data);
+    }
+    catch (error) {
+      console.error('Failed to fetch user data:', error);
+    }
+
+  })
+
+  const getToken = () => {
+    SecureStore.getItemAsync('accessToken').then((token) => {
+      setToken(token);
+      getUserData(token);
+    });
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
 
   return (
     <PaperProvider>
@@ -71,12 +101,16 @@ const Home = ({ userName = 'Nick', location = '11355' }) => {
             { value: '5day', label: '5-day' },
           ]}
         />
+        <View>
+          {userData ? (<Text>{userData.display_name}</Text>) : (<Text>Loading...</Text>)}
+        </View>
       </SafeAreaView>
     </PaperProvider >
   )
 }
 
 export default Home
+
 
 const styles = StyleSheet.create({
   container: {
