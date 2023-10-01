@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    // flexWrap: 'wrap',
+    flexWrap: 'wrap',
   },
   spaceBetween: {
     justifyContent: 'space-between',
