@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
+    "@miblanchard/react-native-slider": "^2.3.1",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
     "axios": "^1.5.0",
@@ -30,8 +31,7 @@
     "react-native-slider": "^0.11.0",
     "react-native-vector-icons": "^10.0.0",
     "react-native-vertical-text": "^1.0.5",
-    "react-native-web": "~0.19.6",
-    "watchman": "^1.0.0"
+    "react-native-web": "~0.19.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
