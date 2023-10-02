@@ -5,6 +5,7 @@ import { Text, SegmentedButtons } from 'react-native-paper';
 import axios from 'axios';
 import * as constants from '../../common/constants'
 import VerticalText from 'react-native-vertical-text';
+import MusicPlayer from '../music/MusicPlayer';
 
 const Home = () => {
   const [token, setToken] = useState('');
@@ -68,9 +69,14 @@ const Home = () => {
             },
             { value: '5day', label: '5-day' },
           ]}
+          style={styles.segmentedButtons}
         />
-        <View>
+        {/* <View>
           {userData ? (<Text>{userData.display_name}</Text>) : (<Text>Loading...</Text>)}
+        </View> */}
+        <View style={styles.musicPlayer}>
+          {userData ? (<Text>{userData.display_name}</Text>) : (<Text>Loading...</Text>)}
+          <MusicPlayer/>
         </View>
       </SafeAreaView>
     </>
@@ -91,4 +97,18 @@ const styles = StyleSheet.create({
   spaceBetween: {
     justifyContent: 'space-between',
   },
+  musicPlayer:{
+    position: 'absolute',
+    marginTop: -50,
+    alignItems: 'center',
+  },
+  segmentedButtons: {
+    position: 'absolute',
+    marginTop: -100,
+    padding: 0
+  },
+  data: {
+    position: 'absolute',
+    marginTop: 30
+  }
 });
