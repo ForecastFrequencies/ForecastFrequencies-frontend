@@ -53,7 +53,7 @@ export default function Login({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
 
-   const getSpotifyToken = async (code) => {
+  const getSpotifyToken = async (code) => {
     try {
       const response = await axios.post(
         `${Constants.SERVER_URL}/get-token`,
@@ -65,8 +65,8 @@ export default function Login({ navigation }) {
         }
       );
       const { accessToken, refreshToken } = response.data;
-      console.log('Access Token:', accessToken);
-      console.log('Refresh Token:', refreshToken);
+      // console.log('Access Token:', accessToken);
+      // console.log('Refresh Token:', refreshToken);
       await SecureStore.setItemAsync('accessToken', accessToken);
       await SecureStore.setItemAsync('refreshToken', refreshToken);
       navigation.navigate('Home');
@@ -79,7 +79,6 @@ export default function Login({ navigation }) {
 
   useEffect(() => {
     if (response?.type === 'success') {
-      setLoading(true);
       const { code } = response.params;
       getSpotifyToken(code);
     }
@@ -113,51 +112,53 @@ export default function Login({ navigation }) {
         </View>
       </Modal>
     );
+  } else {
+    return (
+      <SafeAreaView style={styles.login}>
+        <Image
+          source={require('../../../assets/cloud.png')}
+          style={styles.logo}
+        />
+        <TextInput
+          label="Username"
+          value={userName}
+          onChangeText={(text) => setUserName(text)}
+          mode="outlined"
+          style={styles.input}
+        />
+        <TextInput
+          label="Password"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          mode="outlined"
+          secureTextEntry
+          style={styles.input}
+        />
+        <Button mode="contained" style={styles.login_button}>
+          <Text style={styles.text}>Login</Text>
+        </Button>
+        <TouchableOpacity
+          mode="contained"
+          disabled={!request}
+          onPress={() => {
+            setLoading(true);
+            promptAsync();
+          }}
+          style={styles.spotify_button}
+        >
+          <View style={styles.innerView}>
+            <FontAwesome5
+              name="spotify"
+              size={24}
+              color="black"
+              style={styles.spotify_logo}
+            />
+            <Text style={styles.text}>Login with Spotify</Text>
+          </View>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
   }
-  return (
-    <SafeAreaView style={styles.login}>
-      <Image
-        source={require('../../../assets/cloud.png')}
-        style={styles.logo}
-      />
-      <TextInput
-        label="Username"
-        value={userName}
-        onChangeText={(text) => setUserName(text)}
-        mode="outlined"
-        style={styles.input}
-      />
-      <TextInput
-        label="Password"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        mode="outlined"
-        secureTextEntry
-        style={styles.input}
-      />
-      <Button mode="contained" style={styles.login_button}>
-        <Text style={styles.text}>Login</Text>
-      </Button>
-      <TouchableOpacity
-        mode="contained"
-        disabled={!request}
-        onPress={() => {
-          promptAsync();
-        }}
-        style={styles.spotify_button}
-      >
-        <View style={styles.innerView}>
-          <FontAwesome5
-            name="spotify"
-            size={24}
-            color="black"
-            style={styles.spotify_logo}
-          />
-          <Text style={styles.text}>Login with Spotify</Text>
-        </View>
-      </TouchableOpacity>
-    </SafeAreaView>
-  );
 }
 
 Login.propTypes = {
