@@ -13,15 +13,15 @@ const MusicPlayer = () => {
     const [inProgress, setInProgress] = useState(false);
     const [audioRecorderPlayer] = useState(new AudioRecorderPlayer());
 
-    const onStartProcess = async(e) => {
+    const onStartProcess = async (e) => {
 
     }
 
-    const onPuaseProcess = async(e) => {
+    const onPuaseProcess = async (e) => {
         setIsAlreadyPlaying(false);
     }
 
-    const changeTime = async(s)=> {
+    const changeTime = async (s) => {
         console.log('time is changing...');
     }
 
@@ -36,29 +36,29 @@ const MusicPlayer = () => {
     return (
         <SafeAreaView style={styles.container}>
             <View styles={styles.seekbar}>
-                <Slider minimumValue={0} maximumValue={100} trackStyle={styles.track} thumbStyle={styles.thumb} value={0} minimumTrackTintColor="#93A8B3" onValueChange={(s)=> changeTime(s)} />
+                <Slider minimumValue={0} maximumValue={100} trackStyle={styles.track} thumbStyle={styles.thumb} value={0} minimumTrackTintColor="#93A8B3" onValueChange={(s) => changeTime(s)} />
                 <View style={styles.inprogress}>
                     <Text>
-                        {!inProgress? timeElapsed : audioRecorderPlayer.mmssss(0)}
+                        {!inProgress ? timeElapsed : audioRecorderPlayer.mmssss(0)}
                     </Text>
                     <Text>
-                        {!inProgress? duration : audioRecorderPlayer.mmssss(10)}
+                        {!inProgress ? duration : audioRecorderPlayer.mmssss(10)}
                     </Text>
 
                 </View>
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity function={() => onBackward()}>
-                    <FontAwesome name="backward" size={32} color={'#93A8B3'}/>
+                    <FontAwesome name="backward" size={32} color={'#93A8B3'} />
                 </TouchableOpacity>
                 {/* Add logic to check if its already plaing or not and display play or pause accordingly */}
-                {!isAlreadyPlaying? (
+                {!isAlreadyPlaying ? (
                     <PlayButton function={() => onStartProcess()} state="play" />
                 ) : (
                     <PlayButton function={() => onPuaseProcess()} state="pause" />
                 )}
                 <TouchableOpacity function={() => onForward()}>
-                    <FontAwesome name="forward" size={32} color={'#93A8B3'}/>
+                    <FontAwesome name="forward" size={32} color={'#93A8B3'} />
                 </TouchableOpacity>
             </View>
 
@@ -70,10 +70,10 @@ export default MusicPlayer;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         backgroundColor: 'EAEAEC'
     },
-    buttonContainer:{
+    buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -89,11 +89,11 @@ const styles = StyleSheet.create({
         height: 8,
         backgroundColor: '#3D425C',
     },
-    seekbar: { 
-        margin: 0, 
+    seekbar: {
+        margin: 0,
     },
     inprogress: {
-        marginTop: -12,
+        // marginTop: -12,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
