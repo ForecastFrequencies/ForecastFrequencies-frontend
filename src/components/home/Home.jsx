@@ -1,34 +1,25 @@
-import {
-  StyleSheet,
-  View,
-  SafeAreaView,
-  Modal,
-  ActivityIndicator,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, View, SafeAreaView, ScrollView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import { Text, SegmentedButtons } from 'react-native-paper';
-import LottieView from 'lottie-react-native';
+import { Text, SegmentedButtons, DataTable } from 'react-native-paper';
 import axios from 'axios';
-import * as Constants from '../../common/constants';
-import VerticalText from 'react-native-vertical-text';
+import * as constants from '../../common/constants';
+// import VerticalText from 'react-native-vertical-text';
 import MusicPlayer from '../music/MusicPlayer';
 
-const { width, height } = Dimensions.get('window');
-
-const Home = ({ userName = 'Nick', location = 'London,UK' }) => {
+const Home = ({ location = '11355' }) => {
   const [token, setToken] = useState('');
   const [userData, setUserData] = useState('');
-  const [weatherData, setWeatherData] = useState('');
-  const [loading, setLoading] = useState(false);
-  const date = new Date();
+  const [apiResponse, setApiResponse] = useState('');
+  const [scrollableTab, setScrollableTab] = useState('HOURLY');
+  const [daysForecast, setDaysForecast] = useState([{}]);
 
   const getUserData = async (token) => {
     try {
       const response = await axios.get(
-        `${Constants.SERVER_URL}/spotify-user?token=${token}`
+        `${constants.SERVER_URL}/spotify-user?token=${token}`
       );
+      // console.log(response.data);
       setUserData(response.data);
     } catch (error) {
       console.error('Failed to fetch user data:', error);
@@ -45,110 +36,111 @@ const Home = ({ userName = 'Nick', location = 'London,UK' }) => {
   const getWeatherData = async () => {
     try {
       const response = await axios.post(
-        `${Constants.SERVER_URL}/timeline-weather`,
-        { location },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+        `${constants.SERVER_URL}/timeline-weather?location=${location}`
       );
-      setWeatherData(response.data);
-      setLoading(false);
+      // console.log('WEATHER DATA', response.data);
+      setApiResponse(response.data);
     } catch (error) {
       console.error('Error retrieving weather data frontend:', error);
     }
   };
 
   useEffect(() => {
-    setLoading(true);
+    //setLoading(true);
     getToken();
     getWeatherData();
   }, []);
 
-  if (loading) {
-    return (
-      <Modal transparent={true} animationType={'none'}>
-        <View style={styles.modalBackground}>
-          <View style={styles.activityIndicatorWrapper}>
-            <ActivityIndicator animating={true} size="large" color="#00ff00" />
-          </View>
-        </View>
-      </Modal>
+  useEffect(() => {
+    setDaysForecast(
+      scrollableTab === 'THREE_DAY'
+        ? apiResponse?.days?.slice(0, 3)
+        : scrollableTab === 'FIVE_DAY'
+        ? apiResponse?.days?.slice(0, 5)
+        : apiResponse?.days?.[0]?.hours
     );
-  } else {
-    return (
-      <>
-        <View style={[styles.row, styles.spaceBetween]}>
-          <View>
-            <Text variant="headlineMedium">
-              Hello {userData?.display_name ?? 'User'}!
-            </Text>
-          </View>
-          <View>
-            <Text variant="titleSmall">Menu</Text>
-          </View>
-        </View>
+  }, [scrollableTab, apiResponse]);
+
+  return (
+    <>
+      <View style={[styles.row]}>
         <View>
-          <Text variant="headlineMedium">Location</Text>
-          <Text variant="titleSmall">{date.toDateString()}</Text>
-
-         
+          <Text variant="headlineMedium">{`Good Morning ${userData.display_name}`}</Text>
         </View>
-        <View style={[styles.row, styles.spaceBetween]}>
-          <Text variant="displayLarge">Temp</Text>
-          <Text>{`address: ${weatherData?.address}`}</Text>
-          <LottieView
-            source={require('../../../assets/sunny.json')}
-            autoPlay
-            loop
-            style={{ width: 100, height: 100, backgroundColor: '#eee' }}
-          />
-          {/* <Text>{`cloudcover: ${apiResponse?.currentConditions?.cloudcover}`}</Text> */}
-          <VerticalText
-            style={{ color: 'black', fontSize: 15 }}
-            text={'clear sky'}
-          />
-        </View>
-
-        <SafeAreaView style={styles.container}>
-          <SegmentedButtons
-            value="hourly"
-            buttons={[
-              {
-                value: 'hourly',
-                label: 'Hourly',
-              },
-              {
-                value: '3day',
-                label: '3-day',
-              },
-              { value: '5day', label: '5-day' },
-            ]}
-            style={styles.segmentedButtons}
-          />
-          {/* <View>
-          {userData ? (<Text>{userData.display_name}</Text>) : (<Text>Loading...</Text>)}
-        </View> */}
-          <View style={styles.musicPlayer}>
-            {userData ? (
-              <Text>{userData.display_name}</Text>
-            ) : (
-              <Text>Loading...</Text>
+      </View>
+      <View>
+        <Text variant="headlineMedium">{apiResponse?.address}</Text>
+        <Text variant="titleSmall">{apiResponse?.days?.[0]?.datetime}</Text>
+      </View>
+      <View style={[styles.row, styles.spaceBetween]}>
+        <Text variant="displayLarge">
+          {apiResponse?.currentConditions?.temp}
+        </Text>
+        <Text>{apiResponse?.currentConditions?.conditions}</Text>
+      </View>
+      <SafeAreaView style={styles.container}>
+        <SegmentedButtons
+          value={scrollableTab}
+          buttons={[
+            {
+              value: 'HOURLY',
+              label: 'hourly',
+            },
+            {
+              value: 'THREE_DAY',
+              label: '3-day',
+            },
+            { value: 'FIVE_DAY', label: '5-day' },
+          ]}
+          onValueChange={setScrollableTab}
+        />
+      </SafeAreaView>
+      <SafeAreaView>
+        <DataTable>
+          <DataTable.Header>
+            {(scrollableTab === 'THREE_DAY' ||
+              scrollableTab === 'FIVE_DAY') && (
+              <DataTable.Title>Date</DataTable.Title>
             )}
-            <MusicPlayer />
+            {scrollableTab === 'HOURLY' && (
+              <DataTable.Title>Time</DataTable.Title>
+            )}
+            <DataTable.Title>Temperature</DataTable.Title>
+            <DataTable.Title>Rain</DataTable.Title>
+            <DataTable.Title>Condition</DataTable.Title>
+          </DataTable.Header>
+          <View style={{ height: 220 }}>
+            <ScrollView>
+              {daysForecast?.map((item) => (
+                <DataTable.Row key={String(item.datetime)}>
+                  <DataTable.Cell>{item.datetime}</DataTable.Cell>
+                  {(scrollableTab === 'THREE_DAY' ||
+                    scrollableTab === 'FIVE_DAY') && (
+                    <DataTable.Cell>{`${item.tempmin} - ${item.tempmax}`}</DataTable.Cell>
+                  )}
+                  {scrollableTab === 'HOURLY' && (
+                    <DataTable.Cell>{item.temp}</DataTable.Cell>
+                  )}
+                  <DataTable.Cell>{item.precip}</DataTable.Cell>
+                  <DataTable.Cell numberOfLines={2}>
+                    {item.conditions}
+                  </DataTable.Cell>
+                </DataTable.Row>
+              ))}
+            </ScrollView>
           </View>
-        </SafeAreaView>
-      </>
-    );
-  }
+        </DataTable>
+        <MusicPlayer />
+      </SafeAreaView>
+    </>
+  );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     alignItems: 'center',
   },
   row: {
@@ -158,22 +150,9 @@ const styles = StyleSheet.create({
   spaceBetween: {
     justifyContent: 'space-between',
   },
-  musicPlayer: {
-    position: 'absolute',
-    marginTop: -50,
-    alignItems: 'center',
-  },
-  segmentedButtons: {
-    position: 'absolute',
-    marginTop: -100,
-    padding: 0,
-  },
   data: {
     position: 'absolute',
     marginTop: 30,
   },
-  lottie: {
-    width: 300,
-    height: 200,
-  },
+  dataTable: {},
 });

@@ -21,17 +21,17 @@ const MusicPlayer = () => {
 
   const onStartProcess = async (e) => {};
 
-  const onPuaseProcess = async (e) => {
-    setIsAlreadyPlaying(false);
-  };
-
-  const changeTime = async (s) => {
-    console.log('time is changing...');
-  };
-
+ 
   const onForward = async () => {
     console.log('moving foward ....');
   };
+    const onPuaseProcess = async (e) => {
+        setIsAlreadyPlaying(false);
+    }
+
+    const changeTime = async (s) => {
+        console.log('time is changing...');
+    }
 
   const onBackward = async () => {
     console.log('moving backward...');
@@ -77,39 +77,39 @@ const MusicPlayer = () => {
 export default MusicPlayer;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'EAEAEC',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '1',
-  },
-  track: {
-    height: 2,
-    borderRadius: 1,
-    backgroundColor: '#FFF',
-  },
-  thumb: {
-    width: 8,
-    height: 8,
-    backgroundColor: '#3D425C',
-  },
-  seekbar: {
-    margin: 0,
-  },
-  inprogress: {
-    marginTop: -12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  textLight: {
-    color: '#B6B7BF',
-  },
-  timeStamp: {
-    fontSize: 11,
-    fontWeight: '500',
-  },
+    container: {
+        // flex: 1,
+        backgroundColor: 'EAEAEC'
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '1'
+    },
+    track: {
+        height: 2,
+        borderRadius: 1,
+        backgroundColor: '#FFF',
+    },
+    thumb: {
+        width: 8,
+        height: 8,
+        backgroundColor: '#3D425C',
+    },
+    seekbar: {
+        margin: 0,
+    },
+    inprogress: {
+        // marginTop: -12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    textLight: {
+        color: '#B6B7BF',
+    },
+    timeStamp: {
+        fontSize: 11,
+        fontWeight: '500',
+    },
 });
