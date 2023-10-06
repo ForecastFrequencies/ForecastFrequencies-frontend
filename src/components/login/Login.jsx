@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
+import axios from 'axios';
 import * as WebBrowser from 'expo-web-browser';
 import * as SecureStore from 'expo-secure-store';
 import * as Constants from '../../common/constants';
@@ -34,6 +35,7 @@ const discovery = {
   authorizationEndpoint: 'https://accounts.spotify.com/authorize',
   tokenEndpoint: 'https://accounts.spotify.com/api/token',
 };
+// eslint-disable-next-line react/prop-types
 export default function Login({ navigation }) {
   const [request, response, promptAsync] = useAuthRequest(
     {
@@ -51,33 +53,34 @@ export default function Login({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
 
+  const getSpotifyToken = async (code) => {
+    try {
+      const response = await axios.post(
+        `${Constants.SERVER_URL}/get-token`,
+        { code },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const { accessToken, refreshToken } = response.data;
+      // console.log('Access Token:', accessToken);
+      // console.log('Refresh Token:', refreshToken);
+      await SecureStore.setItemAsync('accessToken', accessToken);
+      await SecureStore.setItemAsync('refreshToken', refreshToken);
+      navigation.navigate('Home');
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching tokens:', err);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (response?.type === 'success') {
-      setLoading(true);
       const { code } = response.params;
-
-      //Fetch the access token from your Express server
-      fetch(`${Constants.SERVER_URL}/get-token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const { accessToken, refreshToken } = data;
-          console.log('Access Token:', accessToken);
-          console.log('Refresh Token:', refreshToken);
-          SecureStore.setItemAsync('accessToken', accessToken);
-          SecureStore.setItemAsync('refreshToken', refreshToken);
-          navigation.navigate('Home');
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error('Error fetching tokens:', error);
-          setLoading(false);
-        });
+      getSpotifyToken(code);
     }
   }, [response]);
 
@@ -85,7 +88,7 @@ export default function Login({ navigation }) {
     setTimeout(() => {
       setShowSplash(false);
     }, 3000);
-    //use logic here to determine if refresh token already exists in asyncstorage and if it does bypass login screen 
+    //use logic here to determine if refresh token already exists in asyncstorage and if it does bypass login screen
   }, []);
 
   if (showSplash) {
@@ -109,51 +112,53 @@ export default function Login({ navigation }) {
         </View>
       </Modal>
     );
+  } else {
+    return (
+      <SafeAreaView style={styles.login}>
+        <Image
+          source={require('../../../assets/cloud.png')}
+          style={styles.logo}
+        />
+        <TextInput
+          label="Username"
+          value={userName}
+          onChangeText={(text) => setUserName(text)}
+          mode="outlined"
+          style={styles.input}
+        />
+        <TextInput
+          label="Password"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          mode="outlined"
+          secureTextEntry
+          style={styles.input}
+        />
+        <Button mode="contained" style={styles.login_button}>
+          <Text style={styles.text}>Login</Text>
+        </Button>
+        <TouchableOpacity
+          mode="contained"
+          disabled={!request}
+          onPress={() => {
+            setLoading(true);
+            promptAsync();
+          }}
+          style={styles.spotify_button}
+        >
+          <View style={styles.innerView}>
+            <FontAwesome5
+              name="spotify"
+              size={24}
+              color="black"
+              style={styles.spotify_logo}
+            />
+            <Text style={styles.text}>Login with Spotify</Text>
+          </View>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
   }
-  return (
-    <SafeAreaView style={styles.login}>
-      <Image
-        source={require('../../../assets/cloud.png')}
-        style={styles.logo}
-      />
-      <TextInput
-        label="Username"
-        value={userName}
-        onChangeText={(text) => setUserName(text)}
-        mode="outlined"
-        style={styles.input}
-      />
-      <TextInput
-        label="Password"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        mode="outlined"
-        secureTextEntry
-        style={styles.input}
-      />
-      <Button mode="contained" style={styles.login_button}>
-        <Text style={styles.text}>Login</Text>
-      </Button>
-      <TouchableOpacity
-        mode="contained"
-        disabled={!request}
-        onPress={() => {
-          promptAsync();
-        }}
-        style={styles.spotify_button}
-      >
-        <View style={styles.innerView}>
-          <FontAwesome5
-            name="spotify"
-            size={24}
-            color="black"
-            style={styles.spotify_logo}
-          />
-          <Text style={styles.text}>Login with Spotify</Text>
-        </View>
-      </TouchableOpacity>
-    </SafeAreaView>
-  );
 }
 
 Login.propTypes = {
