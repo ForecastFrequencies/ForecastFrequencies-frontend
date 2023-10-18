@@ -9,27 +9,29 @@ import MusicPlayer from '../music/MusicPlayer';
 
 const Home = ({ location = '11355' }) => {
   const [token, setToken] = useState('');
-  const [userData, setUserData] = useState('');
+  const [userData, setUserData] = useState({});
   const [apiResponse, setApiResponse] = useState('');
   const [scrollableTab, setScrollableTab] = useState('HOURLY');
   const [daysForecast, setDaysForecast] = useState([{}]);
+  const [userPlaylist, setUserPlaylist] = useState({});
 
   const getUserData = async (token) => {
     try {
       const response = await axios.get(
-        `${constants.SERVER_URL}/spotify-user?token=${token}`
+        `${constants.BACKEND_DEV_SERVER_URL}/spotify-user?token=${token}`
       );
-      // console.log(response.data);
       setUserData(response.data);
     } catch (error) {
-      console.error('Failed to fetch user data:', error);
+      console.error('Failed to fetch user data:', error.code);
     }
   };
 
   const getToken = () => {
+    //console.log('userData: ' + userData);
     SecureStore.getItemAsync('accessToken').then((token) => {
       setToken(token);
       getUserData(token);
+      getUserPlaylist(token);
     });
   };
 
@@ -44,6 +46,20 @@ const Home = ({ location = '11355' }) => {
       console.error('Error retrieving weather data frontend:', error);
     }
   };
+  const getUserPlaylist = async(token) => {
+    console.log('user data: ' + JSON.stringify(userData));
+    console.log('token: ' + token);
+  
+    try{
+      const res = await axios.get(`${constants.BACKEND_DEV_SERVER_URL}/user-playlist?token=${token}&user_id=${userData.id}`);
+      console.log(res.data);
+      setUserPlaylist(res.data);
+
+    }catch(error){
+      console.log('Failed to fetch user playlist: ', error.code);
+    }
+  };
+
 
   useEffect(() => {
     //setLoading(true);
@@ -65,7 +81,7 @@ const Home = ({ location = '11355' }) => {
     <>
       <View style={[styles.row]}>
         <View>
-          <Text variant="headlineMedium">{`Good Morning ${userData.display_name}`}</Text>
+          <Text variant="headlineMedium">{`Good Morning ${userData?.display_name}`}</Text>
         </View>
       </View>
       <View>
