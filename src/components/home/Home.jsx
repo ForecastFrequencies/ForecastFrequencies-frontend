@@ -7,7 +7,8 @@ import * as constants from '../../common/constants';
 // import VerticalText from 'react-native-vertical-text';
 import MusicPlayer from '../music/MusicPlayer';
 
-const Home = ({ location = '11355' }) => {
+const Home = ({ route }) => {
+  const { location } = route.params;
   const [token, setToken] = useState('');
   const [userData, setUserData] = useState('');
   const [apiResponse, setApiResponse] = useState('');
@@ -48,16 +49,18 @@ const Home = ({ location = '11355' }) => {
   useEffect(() => {
     //setLoading(true);
     getToken();
-    getWeatherData();
   }, []);
+  useEffect(() => {
+    getWeatherData();
+  }, [location])
 
   useEffect(() => {
     setDaysForecast(
       scrollableTab === 'THREE_DAY'
         ? apiResponse?.days?.slice(0, 3)
         : scrollableTab === 'FIVE_DAY'
-        ? apiResponse?.days?.slice(0, 5)
-        : apiResponse?.days?.[0]?.hours
+          ? apiResponse?.days?.slice(0, 5)
+          : apiResponse?.days?.[0]?.hours
     );
   }, [scrollableTab, apiResponse]);
 
@@ -100,8 +103,8 @@ const Home = ({ location = '11355' }) => {
           <DataTable.Header>
             {(scrollableTab === 'THREE_DAY' ||
               scrollableTab === 'FIVE_DAY') && (
-              <DataTable.Title>Date</DataTable.Title>
-            )}
+                <DataTable.Title>Date</DataTable.Title>
+              )}
             {scrollableTab === 'HOURLY' && (
               <DataTable.Title>Time</DataTable.Title>
             )}
@@ -116,8 +119,8 @@ const Home = ({ location = '11355' }) => {
                   <DataTable.Cell>{item.datetime}</DataTable.Cell>
                   {(scrollableTab === 'THREE_DAY' ||
                     scrollableTab === 'FIVE_DAY') && (
-                    <DataTable.Cell>{`${item.tempmin} - ${item.tempmax}`}</DataTable.Cell>
-                  )}
+                      <DataTable.Cell>{`${item.tempmin} - ${item.tempmax}`}</DataTable.Cell>
+                    )}
                   {scrollableTab === 'HOURLY' && (
                     <DataTable.Cell>{item.temp}</DataTable.Cell>
                   )}
