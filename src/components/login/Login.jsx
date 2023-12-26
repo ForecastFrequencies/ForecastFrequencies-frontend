@@ -65,9 +65,6 @@ export default function Login({ navigation }) {
         }
       );
       const { accessToken, refreshToken } = response.data;
-      console.log('Access Token:', accessToken);
-      console.log('Refresh Token:', refreshToken);
-      console.log(code);
       await SecureStore.setItemAsync('accessToken', JSON.stringify(accessToken));
       await SecureStore.setItemAsync('refreshToken', JSON.stringify(refreshToken));
       navigation.navigate('Home');

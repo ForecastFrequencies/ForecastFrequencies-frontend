@@ -35,7 +35,6 @@ const onForward = async (event) => {
       try{
         //console.log('current percent: ' + percent + ' duration ' + durationInMs);
         let currSelectedPos = Math.round((percentage / 100 ) * durationInMs);
-        console.log('made it here');
         setCurrentSelectedPos(currSelectedPos);
         await axios.get(`${constants.SERVER_URL}/get-current-position?token=${token}&position=${currSelectedPos}`)
       }catch(e){

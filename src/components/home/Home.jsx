@@ -21,7 +21,6 @@ const Home = ({ route }) => {
       const response = await axios.get(
         `${constants.SERVER_URL}/spotify-user?token=${token}`
       );
-      console.log('user data res: ' + response.data);
       setUserData(response.data);
     } catch (error) {
       console.error('Failed to fetch user data:', error.code);
