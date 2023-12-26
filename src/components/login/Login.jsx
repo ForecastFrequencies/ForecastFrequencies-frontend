@@ -42,7 +42,7 @@ export default function Login({ navigation }) {
       clientId: Constants.CLIENT_ID,
       redirectUri: REDIRECT_URI,
       responseType: ResponseType.Code,
-      scopes: ['user-read-email', 'playlist-modify-public', 'ugc-image-upload'], // example scopes, add according to your app's requirement
+      scopes: ['user-read-email', 'playlist-modify-public', 'ugc-image-upload', 'user-read-playback-state', 'user-library-read', 'playlist-read-private', 'app-remote-control', 'streaming'], // example scopes, add according to your app's requirement
       usePKCE: false,
     },
     discovery
@@ -65,10 +65,11 @@ export default function Login({ navigation }) {
         }
       );
       const { accessToken, refreshToken } = response.data;
-      // console.log('Access Token:', accessToken);
-      // console.log('Refresh Token:', refreshToken);
-      await SecureStore.setItemAsync('accessToken', accessToken);
-      await SecureStore.setItemAsync('refreshToken', refreshToken);
+      console.log('Access Token:', accessToken);
+      console.log('Refresh Token:', refreshToken);
+      console.log(code);
+      await SecureStore.setItemAsync('accessToken', JSON.stringify(accessToken));
+      await SecureStore.setItemAsync('refreshToken', JSON.stringify(refreshToken));
       navigation.navigate('Home');
       setLoading(false);
     } catch (err) {

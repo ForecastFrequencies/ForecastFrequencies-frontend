@@ -19,8 +19,9 @@ const Home = ({ route }) => {
   const getUserData = async (token) => {
     try {
       const response = await axios.get(
-        `${constants.BACKEND_DEV_SERVER_URL}/spotify-user?token=${token}`
+        `${constants.SERVER_URL}/spotify-user?token=${token}`
       );
+      console.log('user data res: ' + response.data);
       setUserData(response.data);
     } catch (error) {
       console.error('Failed to fetch user data:', error.code);
@@ -32,7 +33,6 @@ const Home = ({ route }) => {
     SecureStore.getItemAsync('accessToken').then((token) => {
       setToken(token);
       getUserData(token);
-      getUserPlaylist(token);
     });
   };
 
@@ -47,13 +47,9 @@ const Home = ({ route }) => {
       console.error('Error retrieving weather data frontend:', error);
     }
   };
-  const getUserPlaylist = async(token) => {
-    console.log('user data: ' + JSON.stringify(userData));
-    console.log('token: ' + token);
-  
+  const getPlaylist = async(userData) => {
     try{
-      const res = await axios.get(`${constants.BACKEND_DEV_SERVER_URL}/user-playlist?token=${token}&user_id=${userData.id}`);
-      console.log(res.data);
+      const res = await axios.get(`${constants.BACKEND_DEV_SERVER_URL}/playlist?token=${token}&weather_cond=${apiResponse.currentConditions.icon}`);
       setUserPlaylist(res.data);
 
     }catch(error){
@@ -79,6 +75,11 @@ const Home = ({ route }) => {
           : apiResponse?.days?.[0]?.hours
     );
   }, [scrollableTab, apiResponse]);
+
+  useEffect(() => {
+    getPlaylist(userData);
+
+  }, [userData]);
 
   return (
     <>
@@ -149,7 +150,7 @@ const Home = ({ route }) => {
             </ScrollView>
           </View>
         </DataTable>
-        <MusicPlayer />
+        <MusicPlayer token={token} userPlaylist={userPlaylist}/>
       </SafeAreaView>
     </>
   );
