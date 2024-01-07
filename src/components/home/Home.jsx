@@ -48,7 +48,7 @@ const Home = ({ route }) => {
   };
   const getPlaylist = async (userData) => {
     try {
-      const res = await axios.get(`${constants.BACKEND_DEV_SERVER_URL}/playlist?token=${token}&weather_cond=${apiResponse.currentConditions.icon}`);
+      const res = await axios.get(`${constants.SERVER_URL}/playlist?token=${token}&weather_cond=${apiResponse.currentConditions.icon}`);
       setUserPlaylist(res.data);
 
     } catch (error) {
