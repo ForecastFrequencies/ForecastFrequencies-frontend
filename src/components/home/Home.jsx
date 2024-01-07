@@ -10,7 +10,7 @@ import MusicPlayer from '../music/MusicPlayer';
 const Home = ({ route }) => {
   const { location } = route.params;
   const [token, setToken] = useState('');
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState('');
   const [apiResponse, setApiResponse] = useState('');
   const [scrollableTab, setScrollableTab] = useState('HOURLY');
   const [daysForecast, setDaysForecast] = useState([{}]);
@@ -46,12 +46,12 @@ const Home = ({ route }) => {
       console.error('Error retrieving weather data frontend:', error);
     }
   };
-  const getPlaylist = async(userData) => {
-    try{
+  const getPlaylist = async (userData) => {
+    try {
       const res = await axios.get(`${constants.BACKEND_DEV_SERVER_URL}/playlist?token=${token}&weather_cond=${apiResponse.currentConditions.icon}`);
       setUserPlaylist(res.data);
 
-    }catch(error){
+    } catch (error) {
       console.log('Failed to fetch user playlist: ', error.code);
     }
   };
@@ -149,7 +149,7 @@ const Home = ({ route }) => {
             </ScrollView>
           </View>
         </DataTable>
-        <MusicPlayer token={token} userPlaylist={userPlaylist}/>
+        <MusicPlayer token={token} userPlaylist={userPlaylist} />
       </SafeAreaView>
     </>
   );
