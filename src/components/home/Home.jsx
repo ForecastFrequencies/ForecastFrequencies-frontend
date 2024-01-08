@@ -14,20 +14,21 @@ const Home = ({ route }) => {
   const [apiResponse, setApiResponse] = useState('');
   const [scrollableTab, setScrollableTab] = useState('HOURLY');
   const [daysForecast, setDaysForecast] = useState([{}]);
+  const [userPlaylist, setUserPlaylist] = useState({});
 
   const getUserData = async (token) => {
     try {
       const response = await axios.get(
         `${constants.SERVER_URL}/spotify-user?token=${token}`
       );
-      // console.log(response.data);
       setUserData(response.data);
     } catch (error) {
-      console.error('Failed to fetch user data:', error);
+      console.error('Failed to fetch user data:', error.code);
     }
   };
 
   const getToken = () => {
+    //console.log('userData: ' + userData);
     SecureStore.getItemAsync('accessToken').then((token) => {
       setToken(token);
       getUserData(token);
@@ -45,6 +46,16 @@ const Home = ({ route }) => {
       console.error('Error retrieving weather data frontend:', error);
     }
   };
+  const getPlaylist = async (userData) => {
+    try {
+      const res = await axios.get(`${constants.SERVER_URL}/playlist?token=${token}&weather_cond=${apiResponse.currentConditions.icon}`);
+      setUserPlaylist(res.data);
+
+    } catch (error) {
+      console.log('Failed to fetch user playlist: ', error.code);
+    }
+  };
+
 
   useEffect(() => {
     //setLoading(true);
@@ -64,11 +75,16 @@ const Home = ({ route }) => {
     );
   }, [scrollableTab, apiResponse]);
 
+  useEffect(() => {
+    getPlaylist(userData);
+
+  }, [userData]);
+
   return (
     <>
       <View style={[styles.row]}>
         <View>
-          <Text variant="headlineMedium">{`Good Morning ${userData.display_name}`}</Text>
+          <Text variant="headlineMedium">{`Good Morning ${userData?.display_name}`}</Text>
         </View>
       </View>
       <View>
@@ -133,7 +149,7 @@ const Home = ({ route }) => {
             </ScrollView>
           </View>
         </DataTable>
-        <MusicPlayer />
+        <MusicPlayer token={token} userPlaylist={userPlaylist} />
       </SafeAreaView>
     </>
   );
