@@ -58,4 +58,11 @@ const WeatherDataTable = ({
 
 export default WeatherDataTable;
 
+WeatherDataTable.propTypes = {
+  scrollableTab: PropTypes.string.isRequired,
+  setScrollableTab: PropTypes.func.isRequired,
+  daysForecast: PropTypes.array.isRequired,
+  cardBackgroundColor: PropTypes.string.isRequired,
+};
+
 const styles = StyleSheet.create({});

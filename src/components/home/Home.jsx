@@ -23,11 +23,11 @@ const Home = ({ route }) => {
   const [loading, setLoading] = useState(false);
 
   const getUserData = async (token) => {
+    console.log('get userdata being called');
     try {
       const response = await axios.get(
         `${constants.SERVER_URL}/spotify-user?token=${token}`
       );
-      // console.log(response.data);
       setUserData(response.data);
     } catch (error) {
       console.error('Failed to fetch user data:', error);
@@ -71,7 +71,6 @@ const Home = ({ route }) => {
   }, [location]);
 
   useEffect(() => {
-    console.log('scrollableTab', weatherData);
     setDaysForecast(
       scrollableTab === 'THREE_DAY'
         ? weatherData?.days?.slice(0, 3)

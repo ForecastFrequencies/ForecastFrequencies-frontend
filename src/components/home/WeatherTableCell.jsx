@@ -8,18 +8,19 @@ const WeatherTableCell = ({ forecast, scrollableTab }) => {
 
   useEffect(() => {
     if (scrollableTab === 'THREE_DAY' || scrollableTab === 'FIVE_DAY') {
-      const date = new Date(forecast.datetime);
-
-      const dayOfWeek = date.toLocaleDateString('en-us', { weekday: 'long' });
-      console.log('dayOfWeek', dayOfWeek);
+      const date = new Date(`${forecast.datetime}T00:00:00Z`);
+      const dayOfWeek = date.toLocaleDateString('en-us', {
+        weekday: 'long',
+        timeZone: 'UTC',
+      });
       const arr = dayOfWeek.split(',');
       setDatetime(arr[0]);
     } else {
-      console.log('test', forecast);
       const date = new Date(`1970-01-01T${forecast.datetime}Z`);
       const time = date.toLocaleTimeString('en-US', {
         hour: 'numeric',
         hour12: true,
+        timeZone: 'UTC',
       });
       setDatetime(time);
     }
