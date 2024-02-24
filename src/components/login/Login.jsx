@@ -11,7 +11,7 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, useTheme } from 'react-native-paper';
 import axios from 'axios';
 import * as WebBrowser from 'expo-web-browser';
 import * as SecureStore from 'expo-secure-store';
@@ -52,6 +52,7 @@ export default function Login({ navigation }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
+  const theme = useTheme();
 
   const getSpotifyToken = async (code) => {
     try {
@@ -65,8 +66,6 @@ export default function Login({ navigation }) {
         }
       );
       const { accessToken, refreshToken } = response.data;
-      // console.log('Access Token:', accessToken);
-      // console.log('Refresh Token:', refreshToken);
       await SecureStore.setItemAsync('accessToken', accessToken);
       await SecureStore.setItemAsync('refreshToken', refreshToken);
       navigation.navigate('Home');
@@ -93,7 +92,7 @@ export default function Login({ navigation }) {
 
   if (showSplash) {
     return (
-      <View style={styles.splashContainer}>
+      <View style={[styles.splashContainer,{ backgroundColor: theme.colors.background }]}>
         <Image
           source={require('../../../assets/cloud.png')}
           style={styles.logo}
@@ -114,7 +113,9 @@ export default function Login({ navigation }) {
     );
   } else {
     return (
-      <SafeAreaView style={styles.login}>
+      <SafeAreaView
+        style={[styles.login, { backgroundColor: theme.colors.background }]}
+      >
         <Image
           source={require('../../../assets/cloud.png')}
           style={styles.logo}

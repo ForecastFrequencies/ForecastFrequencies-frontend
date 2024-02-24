@@ -1,26 +1,33 @@
-import { StyleSheet, View, SafeAreaView, ScrollView } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
-import { Text, SegmentedButtons, DataTable } from 'react-native-paper';
+import { Text, Divider } from 'react-native-paper';
 import axios from 'axios';
 import * as constants from '../../common/constants';
-// import VerticalText from 'react-native-vertical-text';
+import { getBackgroundColor, getTextColor } from '../../common/utils';
 import MusicPlayer from '../music/MusicPlayer';
+import tinycolor from 'tinycolor2';
+import CurrentWeatherInfo from './CurrentWeatherInfo';
+import WeatherDataTable from './WeatherDataTable';
 
 const Home = ({ route }) => {
   const { location } = route.params;
   const [token, setToken] = useState('');
   const [userData, setUserData] = useState('');
-  const [apiResponse, setApiResponse] = useState('');
+  const [weatherData, setWeatherData] = useState(undefined);
   const [scrollableTab, setScrollableTab] = useState('HOURLY');
   const [daysForecast, setDaysForecast] = useState([{}]);
+  const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
+  const [cardBackgroundColor, setCardBackgroundColor] = useState('#000000');
+  const [textColor, setTextColor] = useState('#000000');
+  const [loading, setLoading] = useState(false);
 
   const getUserData = async (token) => {
+    console.log('get userdata being called');
     try {
       const response = await axios.get(
         `${constants.SERVER_URL}/spotify-user?token=${token}`
       );
-      // console.log(response.data);
       setUserData(response.data);
     } catch (error) {
       console.error('Failed to fetch user data:', error);
@@ -39,116 +46,104 @@ const Home = ({ route }) => {
       const response = await axios.post(
         `${constants.SERVER_URL}/timeline-weather?location=${location}`
       );
-      // console.log('WEATHER DATA', response.data);
-      setApiResponse(response.data);
+      console.log('WEATHER DATA', response.data);
+      setWeatherData(response.data);
+      const color = getBackgroundColor(
+        response.data?.currentConditions?.conditions
+      );
+      setBackgroundColor(color);
+      setCardBackgroundColor(tinycolor(color).darken(25).toString());
+      setTextColor(getTextColor(color));
     } catch (error) {
       console.error('Error retrieving weather data frontend:', error);
     }
   };
 
   useEffect(() => {
-    //setLoading(true);
+    setLoading(true);
     getToken();
+    getWeatherData();
+    setLoading(false);
   }, []);
+
   useEffect(() => {
     getWeatherData();
-  }, [location])
+  }, [location]);
 
   useEffect(() => {
     setDaysForecast(
       scrollableTab === 'THREE_DAY'
-        ? apiResponse?.days?.slice(0, 3)
+        ? weatherData?.days?.slice(0, 3)
         : scrollableTab === 'FIVE_DAY'
-          ? apiResponse?.days?.slice(0, 5)
-          : apiResponse?.days?.[0]?.hours
+        ? weatherData?.days?.slice(0, 5)
+        : scrollableTab === 'HOURLY'
+        ? weatherData?.days?.[0]?.hours
+        : []
     );
-  }, [scrollableTab, apiResponse]);
+  }, [weatherData, scrollableTab]);
 
-  return (
-    <>
-      <View style={[styles.row]}>
-        <View>
-          <Text variant="headlineMedium">{`Good Morning ${userData.display_name}`}</Text>
-        </View>
-      </View>
+  if (loading || weatherData === '') {
+    return (
       <View>
-        <Text variant="headlineMedium">{apiResponse?.address}</Text>
-        <Text variant="titleSmall">{apiResponse?.days?.[0]?.datetime}</Text>
+        <Text>Loading...</Text>
       </View>
-      <View style={[styles.row, styles.spaceBetween]}>
-        <Text variant="displayLarge">
-          {apiResponse?.currentConditions?.temp}
-        </Text>
-        <Text>{apiResponse?.currentConditions?.conditions}</Text>
-      </View>
-      <SafeAreaView style={styles.container}>
-        <SegmentedButtons
-          value={scrollableTab}
-          buttons={[
-            {
-              value: 'HOURLY',
-              label: 'hourly',
-            },
-            {
-              value: 'THREE_DAY',
-              label: '3-day',
-            },
-            { value: 'FIVE_DAY', label: '5-day' },
-          ]}
-          onValueChange={setScrollableTab}
-        />
+    );
+  } else {
+    return (
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: backgroundColor }]}
+      >
+        {weatherData && (
+          <>
+            <View style={styles.currentWeatherInfo}>
+              <CurrentWeatherInfo
+                backgroundColor={backgroundColor}
+                weatherData={weatherData}
+                textColor={textColor}
+                cardBackgroundColor={cardBackgroundColor}
+              />
+            </View>
+            <Divider />
+            <View style={styles.weatherDataTable}>
+              <WeatherDataTable
+                scrollableTab={scrollableTab}
+                setScrollableTab={setScrollableTab}
+                daysForecast={daysForecast}
+                backgroundColor={backgroundColor}
+                cardBackgroundColor={cardBackgroundColor}
+              />
+            </View>
+          </>
+        )}
+
+        <View style={styles.musicPlayerBox}>
+          <MusicPlayer />
+        </View>
       </SafeAreaView>
-      <SafeAreaView>
-        <DataTable>
-          <DataTable.Header>
-            {(scrollableTab === 'THREE_DAY' ||
-              scrollableTab === 'FIVE_DAY') && (
-                <DataTable.Title>Date</DataTable.Title>
-              )}
-            {scrollableTab === 'HOURLY' && (
-              <DataTable.Title>Time</DataTable.Title>
-            )}
-            <DataTable.Title>Temperature</DataTable.Title>
-            <DataTable.Title>Rain</DataTable.Title>
-            <DataTable.Title>Condition</DataTable.Title>
-          </DataTable.Header>
-          <View style={{ height: 220 }}>
-            <ScrollView>
-              {daysForecast?.map((item) => (
-                <DataTable.Row key={String(item.datetime)}>
-                  <DataTable.Cell>{item.datetime}</DataTable.Cell>
-                  {(scrollableTab === 'THREE_DAY' ||
-                    scrollableTab === 'FIVE_DAY') && (
-                      <DataTable.Cell>{`${item.tempmin} - ${item.tempmax}`}</DataTable.Cell>
-                    )}
-                  {scrollableTab === 'HOURLY' && (
-                    <DataTable.Cell>{item.temp}</DataTable.Cell>
-                  )}
-                  <DataTable.Cell>{item.precip}</DataTable.Cell>
-                  <DataTable.Cell numberOfLines={2}>
-                    {item.conditions}
-                  </DataTable.Cell>
-                </DataTable.Row>
-              ))}
-            </ScrollView>
-          </View>
-        </DataTable>
-        <MusicPlayer />
-      </SafeAreaView>
-    </>
-  );
+    );
+  }
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    alignItems: 'center',
+    flex: 1,
+    flexShrink: 0,
   },
   row: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  currentWeatherInfo: {
+    flex: 2.3,
+  },
+  weatherDataTable: {
+    paddingTop: 10,
+    flex: 1,
+  },
+  musicPlayerBox: {
+    flex: 1,
   },
   spaceBetween: {
     justifyContent: 'space-between',
