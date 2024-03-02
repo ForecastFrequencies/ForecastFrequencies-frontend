@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image ,Dimensions} from 'react-native';
 import { Icon, Card, Text } from 'react-native-paper';
 
 import PropTypes from 'prop-types';
@@ -8,9 +8,9 @@ import React from 'react';
 const CurrentWeatherInfo = ({
   weatherData,
   textColor,
-  backgroundColor,
   cardBackgroundColor,
 }) => {
+  const { width, height } = Dimensions.get('window');
   return (
     <View style={styles.container}>
       <View style={styles.currentLocation}>
@@ -23,7 +23,7 @@ const CurrentWeatherInfo = ({
       </View>
       <View style={styles.weatherInfo}>
         <Image
-          style={{ width: 200, height: 200 }}
+          style={{ width: width*.4, height: height*.2, padding: 10}}
           source={require('../../../assets/sunny.png')}
         ></Image>
         <Text
@@ -82,7 +82,7 @@ export default CurrentWeatherInfo;
 CurrentWeatherInfo.propTypes = {
   weatherData: PropTypes.object.isRequired,
   textColor: PropTypes.string.isRequired,
-  backgroundColor: PropTypes.string.isRequired,
+  cardBackgroundColor: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -97,9 +97,6 @@ const styles = StyleSheet.create({
   },
   map: {
     paddingTop: 8,
-  },
-  spaceBetween: {
-    justifyContent: 'space-between',
   },
   mapText: {
     fontSize: 25,
