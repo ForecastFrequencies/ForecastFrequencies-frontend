@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { SegmentedButtons, Card } from 'react-native-paper';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -11,7 +11,7 @@ const WeatherDataTable = ({
   cardBackgroundColor,
 }) => {
   return (
-    <View>
+    <View style = {styles.container}>
       <View style = {{paddingBottom:12}}>
         <SegmentedButtons
           value={scrollableTab}
@@ -56,6 +56,13 @@ const WeatherDataTable = ({
   );
 };
 
+const styles = {
+  container: {
+    paddingTop: 10,
+
+  },
+};
+
 export default WeatherDataTable;
 
 WeatherDataTable.propTypes = {
@@ -65,4 +72,3 @@ WeatherDataTable.propTypes = {
   cardBackgroundColor: PropTypes.string.isRequired,
 };
 
-const styles = StyleSheet.create({});

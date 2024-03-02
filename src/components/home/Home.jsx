@@ -93,32 +93,34 @@ const Home = ({ route }) => {
       <SafeAreaView
         style={[styles.container, { backgroundColor: backgroundColor }]}
       >
-        {weatherData && (
-          <>
-            <View style={styles.currentWeatherInfo}>
-              <CurrentWeatherInfo
-                backgroundColor={backgroundColor}
-                weatherData={weatherData}
-                textColor={textColor}
-                cardBackgroundColor={cardBackgroundColor}
-              />
-            </View>
-            <Divider />
-            <View style={styles.weatherDataTable}>
-              <WeatherDataTable
-                scrollableTab={scrollableTab}
-                setScrollableTab={setScrollableTab}
-                daysForecast={daysForecast}
-                backgroundColor={backgroundColor}
-                cardBackgroundColor={cardBackgroundColor}
-              />
-            </View>
-          </>
-        )}
+  
+          {weatherData && (
+            <>
+              <View style={styles.currentWeatherInfo}>
+                <CurrentWeatherInfo
+                  backgroundColor={backgroundColor}
+                  weatherData={weatherData}
+                  textColor={textColor}
+                  cardBackgroundColor={cardBackgroundColor}
+                />
+              </View>
+              <Divider />
+              <View style={styles.weatherDataTable}>
+                <WeatherDataTable
+                  scrollableTab={scrollableTab}
+                  setScrollableTab={setScrollableTab}
+                  daysForecast={daysForecast}
+                  backgroundColor={backgroundColor}
+                  cardBackgroundColor={cardBackgroundColor}
+                />
+              </View>
+            </>
+          )}
 
-        <View style={styles.musicPlayerBox}>
-          <MusicPlayer />
-        </View>
+          <View style={styles.musicPlayerBox}>
+            <MusicPlayer />
+          </View>
+       
       </SafeAreaView>
     );
   }
@@ -129,28 +131,16 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexShrink: 0,
-  },
-  row: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
   },
   currentWeatherInfo: {
-    flex: 2.3,
+    flex: 2,
   },
   weatherDataTable: {
-    paddingTop: 10,
+   
     flex: 1,
   },
   musicPlayerBox: {
+  
     flex: 1,
   },
-  spaceBetween: {
-    justifyContent: 'space-between',
-  },
-  data: {
-    position: 'absolute',
-    marginTop: 30,
-  },
-  dataTable: {},
 });
