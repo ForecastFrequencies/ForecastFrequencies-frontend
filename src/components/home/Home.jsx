@@ -21,6 +21,7 @@ const Home = ({ route }) => {
   const [cardBackgroundColor, setCardBackgroundColor] = useState('#000000');
   const [textColor, setTextColor] = useState('#000000');
   const [loading, setLoading] = useState(false);
+  const [userPlaylist, setUserPlaylist] = useState({});
 
   const getUserData = async (token) => {
     console.log('get userdata being called');
@@ -48,6 +49,7 @@ const Home = ({ route }) => {
       );
       console.log('WEATHER DATA', response.data);
       setWeatherData(response.data);
+      getPlaylist(response.data);
       const color = getBackgroundColor(
         response.data?.currentConditions?.conditions
       );
@@ -56,6 +58,16 @@ const Home = ({ route }) => {
       setTextColor(getTextColor(color));
     } catch (error) {
       console.error('Error retrieving weather data frontend:', error);
+    }
+  };
+
+  const getPlaylist = async (weatherData) => {
+    try {
+      const res = await axios.get(`${constants.SERVER_URL}/playlist?token=${token}&weather_cond=${weatherData.currentConditions.icon}`);
+      setUserPlaylist(res.data);
+
+    } catch (error) {
+      console.log('Failed to fetch user playlist: ', error.code);
     }
   };
 
@@ -117,10 +129,9 @@ const Home = ({ route }) => {
             </>
           )}
 
-          <View style={styles.musicPlayerBox}>
-            <MusicPlayer />
-          </View>
-       
+        <View style={styles.musicPlayerBox}>
+          <MusicPlayer token={token} userPlaylist={userPlaylist} />
+        </View>
       </SafeAreaView>
     );
   }
@@ -140,7 +151,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   musicPlayerBox: {
-  
     flex: 1,
   },
 });

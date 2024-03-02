@@ -42,7 +42,7 @@ export default function Login({ navigation }) {
       clientId: Constants.CLIENT_ID,
       redirectUri: REDIRECT_URI,
       responseType: ResponseType.Code,
-      scopes: ['user-read-email', 'playlist-modify-public', 'ugc-image-upload'], // example scopes, add according to your app's requirement
+      scopes: ['user-read-email', 'playlist-modify-public', 'ugc-image-upload', , 'user-read-playback-state', 'user-library-read', 'playlist-read-private', 'app-remote-control', 'streaming'], // example scopes, add according to your app's requirement
       usePKCE: false,
     },
     discovery
