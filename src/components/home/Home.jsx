@@ -1,4 +1,4 @@
-import { StyleSheet, View, SafeAreaView, ScrollView } from 'react-native';
+import { StyleSheet, View, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Text, Divider } from 'react-native-paper';
