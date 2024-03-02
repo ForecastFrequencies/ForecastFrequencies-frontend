@@ -27,7 +27,7 @@ const onForward = async (event) => {
   try{
     event.preventDefault();
     setIsAlreadyPlaying(true);
-    await axios.get(`${constants.SERVER_URL}/next?token=${token}`)
+    await axios.get(`${constants.SERVER_URL}/next-song?token=${token}`)
   }catch(e){
     console.log(e.message);
   }
@@ -196,14 +196,12 @@ const styles = StyleSheet.create({
     seekbar: {
       marginLeft: 40,
       marginRight: 40,
-      padding: 5,
     },
     inprogress: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginLeft: 40,
       marginRight: 40,
-      padding: 5,
     },
     textLight: {
       color: '#B6B7BF',
@@ -226,7 +224,7 @@ const styles = StyleSheet.create({
       shadowRadius: 30,
       shadowOpacity: 0.5,
     },
-    trackname: { alignItems: 'center', marginTop: 32 },
+    trackname: { alignItems: 'center'},
     textDark: {
       color: '#3D425C',
     },

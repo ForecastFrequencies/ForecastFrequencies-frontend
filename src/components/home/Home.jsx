@@ -129,7 +129,9 @@ const Home = ({ route }) => {
             </>
           )}
 
-        <MusicPlayer token={token} userPlaylist={userPlaylist} />
+        <View style={styles.musicPlayerBox}>
+          <MusicPlayer token={token} userPlaylist={userPlaylist} />
+        </View>
       </SafeAreaView>
     );
   }
@@ -149,7 +151,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   musicPlayerBox: {
-  
     flex: 1,
   },
 });
