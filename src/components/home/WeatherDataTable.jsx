@@ -68,7 +68,7 @@ export default WeatherDataTable;
 WeatherDataTable.propTypes = {
   scrollableTab: PropTypes.string.isRequired,
   setScrollableTab: PropTypes.func.isRequired,
-  daysForecast: PropTypes.array,
+  daysForecast: PropTypes.array.isRequired,
   cardBackgroundColor: PropTypes.string.isRequired,
 };
 

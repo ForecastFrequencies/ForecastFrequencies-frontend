@@ -13,8 +13,6 @@ import tinycolor from 'tinycolor2';
 import CurrentWeatherInfo from './CurrentWeatherInfo';
 import WeatherDataTable from './WeatherDataTable';
 
-navigator.geolocation = require('expo-location');
-
 const Home = ({ route }) => {
   const [location, setLocation] = useState('');
   const [currentLocation, setCurrentLocation] = useState('');
@@ -175,7 +173,7 @@ const Home = ({ route }) => {
         )}
 
         <View style={styles.musicPlayerBox}>
-          <MusicPlayer />
+          <MusicPlayer token={token} userPlaylist={userPlaylist} />
         </View>
 
       </SafeAreaView>

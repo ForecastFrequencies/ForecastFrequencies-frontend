@@ -28,7 +28,7 @@ const CurrentWeatherInfo = ({
       </View>
       <View style={styles.weatherInfo}>
         <Image
-          style={{ width: width * .4, height: height * .16, padding: 10 }}
+          style={{ width: width * .4, height: height * .2, padding: 10 }}
           source={require('../../../assets/sunny.png')}
         ></Image>
         <Text
