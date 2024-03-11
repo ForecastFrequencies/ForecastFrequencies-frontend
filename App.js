@@ -26,11 +26,11 @@ function Root() {
       <Drawer.Screen
         name="Home"
         component={Home}
-        initialParams={{ location: 'South Plainfield, NJ' }}
+        initialParams={{ location: '' }}
       />
       <Drawer.Screen name="Settings" component={Settings} />
       <Drawer.Screen name="Profile" component={Profile} />
-      <Drawer.Screen name="LocationSearch" component={LocationSearch} />
+      <Drawer.Screen name="Location Search" component={LocationSearch} />
     </Drawer.Navigator>
   );
 }

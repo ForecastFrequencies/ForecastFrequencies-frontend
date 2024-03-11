@@ -1,14 +1,16 @@
-import { StyleSheet, View, Image ,Dimensions} from 'react-native';
-import { Icon, Card, Text } from 'react-native-paper';
+import { StyleSheet, View, Image, Dimensions } from 'react-native';
+import { Icon, Card, Text, Button } from 'react-native-paper';
 
 import PropTypes from 'prop-types';
 
 import React from 'react';
 
 const CurrentWeatherInfo = ({
+  location,
   weatherData,
   textColor,
   cardBackgroundColor,
+  setToCurrentLocation,
 }) => {
   const { width, height } = Dimensions.get('window');
   return (
@@ -18,12 +20,15 @@ const CurrentWeatherInfo = ({
           <View style={styles.map}>
             <Icon source="map-marker" size={30} />
           </View>
-          <Text style={[styles.mapText, { color: textColor }]}>Fortaleza</Text>
+          <Text style={[styles.mapText, { color: textColor }]}>{location}</Text>
+          <Button mode="text" compact={true} onPress={() => setToCurrentLocation()}>
+            use current location
+          </Button>
         </View>
       </View>
       <View style={styles.weatherInfo}>
         <Image
-          style={{ width: width*.4, height: height*.2, padding: 10}}
+          style={{ width: width * .4, height: height * .16, padding: 10 }}
           source={require('../../../assets/sunny.png')}
         ></Image>
         <Text
@@ -83,6 +88,8 @@ CurrentWeatherInfo.propTypes = {
   weatherData: PropTypes.object.isRequired,
   textColor: PropTypes.string.isRequired,
   cardBackgroundColor: PropTypes.string.isRequired,
+  location: PropTypes.string,
+  setToCurrentLocation: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

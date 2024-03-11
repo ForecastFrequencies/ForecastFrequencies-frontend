@@ -11,8 +11,8 @@ const WeatherDataTable = ({
   cardBackgroundColor,
 }) => {
   return (
-    <View style = {styles.container}>
-      <View style = {{paddingBottom:12}}>
+    <View style={styles.container}>
+      <View style={{ paddingBottom: 12 }}>
         <SegmentedButtons
           value={scrollableTab}
           theme={{ colors: { primary: 'green' } }}
@@ -44,11 +44,11 @@ const WeatherDataTable = ({
         />
       </View>
 
-      
+
       <ScrollView horizontal={true}>
         {daysForecast?.map((forecast, index) => (
-          <Card key={index} style={{ marginHorizontal: 5, backgroundColor: cardBackgroundColor}}>
-            <WeatherTableCell forecast={forecast} scrollableTab = {scrollableTab} />
+          <Card key={index} style={{ marginHorizontal: 5, backgroundColor: cardBackgroundColor }}>
+            <WeatherTableCell forecast={forecast} scrollableTab={scrollableTab} />
           </Card>
         ))}
       </ScrollView>
@@ -68,7 +68,7 @@ export default WeatherDataTable;
 WeatherDataTable.propTypes = {
   scrollableTab: PropTypes.string.isRequired,
   setScrollableTab: PropTypes.func.isRequired,
-  daysForecast: PropTypes.array.isRequired,
+  daysForecast: PropTypes.array,
   cardBackgroundColor: PropTypes.string.isRequired,
 };
 

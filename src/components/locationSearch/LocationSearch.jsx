@@ -1,13 +1,24 @@
-import { View, Text, Button } from 'react-native'
-import React from 'react'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 const LocationSearch = ({ navigation }) => {
     return (
-        <View>
-            <Text>LocationSearch</Text>
-            <Button title="Change location to 01510" onPress={() => navigation.navigate('Home', { location: '01510' })} />
-        </View>
-    )
-}
+        <GooglePlacesAutocomplete
+            placeholder='Search'
+            onPress={(data, details = null) => {
+                navigation.navigate('Home', { location: details.description })
+            }}
+            query={{
+                key: 'AIzaSyA4eWxhZo0qLaUNTUJhFLdVh_-O0RVC348',
+                language: 'en',
+            }}
+        />
+    );
+};
 
-export default LocationSearch
+LocationSearch.propTypes = {
+    navigation: PropTypes.shape({ navigate: PropTypes.func }),
+};
+
+export default LocationSearch;

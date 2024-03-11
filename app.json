@@ -3,7 +3,7 @@
     "name": "ForecastFrequencies",
     "slug": "ForecastFrequencies",
     "version": "1.0.0",
-    "scheme":"ForecastFrequencies",
+    "scheme": "ForecastFrequencies",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -26,6 +26,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow ForecastFrequencies to use your location.",
+          "isAndroidBackgroundLocationEnabled": true
+        }
+      ]
+    ]
   }
 }
