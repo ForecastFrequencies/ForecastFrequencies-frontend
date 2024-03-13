@@ -11,7 +11,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import * as constants from '../../common/constants';
 import axios from 'axios';
 
-const MusicPlayer = ({token , userPlaylist}) => {
+const MusicPlayer = ({ userPlaylist}) => {
 
   const [isAlreadyPlaying, setIsAlreadyPlaying] = useState(false);
   const [duration, setDuration] = useState('00:00:00');
@@ -21,13 +21,12 @@ const MusicPlayer = ({token , userPlaylist}) => {
   const [currentSelectedPos, setCurrentSelectedPos] = useState(0);
   const [artistname, setArtistName] = useState('');
   const [songname, setSongName] = useState('');
-  const [inProgress, setInProgress] = useState(false);
 
 const onForward = async (event) => {
   try{
     event.preventDefault();
     setIsAlreadyPlaying(true);
-    await axios.get(`${constants.SERVER_URL}/next-song?token=${token}`)
+    await axios.get(`${constants.SERVER_URL}/next-song`)
   }catch(e){
     console.log(e.message);
   }
@@ -35,10 +34,8 @@ const onForward = async (event) => {
 
   const changeTime = async (percentage) => {
       try{
-        //console.log('current percent: ' + percent + ' duration ' + durationInMs);
         let currSelectedPos = Math.round((percentage / 100 ) * durationInMs);
-        setCurrentSelectedPos(currSelectedPos);
-        await axios.get(`${constants.SERVER_URL}/get-current-position?token=${token}&position=${currSelectedPos}`)
+        await axios.get(`${constants.SERVER_URL}/get-current-position?position=${currSelectedPos}`);
       }catch(e){
         console.log(e.message);
       }
@@ -48,7 +45,7 @@ const onBackward = async (event) => {
   try{
     event.preventDefault();
     setIsAlreadyPlaying(true);
-    await axios.get(`${constants.SERVER_URL}/previous?token=${token}`);
+    await axios.get(`${constants.SERVER_URL}/previous`);
   }catch(e){
     console.log(e.message);
   }
@@ -59,8 +56,11 @@ const playBtnClicked = async (event) => {
     event.preventDefault();
     const encodedPlaylist = encodeURIComponent(userPlaylist.uri);
     setIsAlreadyPlaying(true);
-    await axios.get(`${constants.SERVER_URL}/play-song?token=${token}&playlist=${decodeURIComponent(encodedPlaylist)}&current_pos=${currentSelectedPos}`);
-    getPlayBackDetails();
+    const resp = await axios.get(`${constants.SERVER_URL}/play-song?playlist=${decodeURIComponent(encodedPlaylist)}&current_pos=${currentSelectedPos}`);
+    if(resp){
+      getPlayBackDetails();
+    }
+    
   }catch(e){
     console.log(e.message);
   }
@@ -70,8 +70,10 @@ const pauseBtnClicked = async (event) => {
   try{
     event.preventDefault();
     setIsAlreadyPlaying(false);
-    await axios.get(`${constants.SERVER_URL}/pause?token=${token}`);
-    getPlayBackDetails();
+    const resp = await axios.get(`${constants.SERVER_URL}/pause?`);
+    if(resp){
+      getPlayBackDetails();
+    }
 
   }catch(e){
     console.log(e.message);
@@ -93,7 +95,7 @@ const formatTime = (time) => {
 
 const getPlayBackDetails = async () => {
   try{
-    const response = await axios.get(`${constants.SERVER_URL}/get-song-details?token=${token}}`);
+    const response = await axios.get(`${constants.SERVER_URL}/get-song-details?`);
     setArtistName(response?.data.item?.artists[0]?.name);
     setSongName(response?.data?.item?.name);
     setTimeElapsed(formatTime(response.data.progress_ms));
@@ -116,7 +118,7 @@ useEffect(() => {
       }, 1000);
       return () => clearInterval(interval);
     }
-},[isAlreadyPlaying, duration, timeElapsed, currentSelectedPos, userPlaylist]);
+},[isAlreadyPlaying, duration, timeElapsed, currentSelectedPos, percent]);
 
 
   return (
@@ -140,7 +142,7 @@ useEffect(() => {
         </View>
         <View style={styles.inprogress}>
           <Text style={styles.durationStyle}>
-            {currentSelectedPos? formatTime(currentSelectedPos): timeElapsed}
+            {timeElapsed? timeElapsed : '00:00:00'}
           </Text>
           <Text style={styles.durationStyle}>{duration? duration: '00:00:00'}</Text>
         </View>
@@ -149,7 +151,6 @@ useEffect(() => {
         <TouchableOpacity onPress={onBackward}>
           <FontAwesome name="backward" size={32} color={'#93A8B3'} />
         </TouchableOpacity>
-        {/* Add logic to check if its already plaing or not and display play or pause accordingly */}
         {!isAlreadyPlaying ? (
           <TouchableOpacity 
             style={styles.playButtonContainer}
