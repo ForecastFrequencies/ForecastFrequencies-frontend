@@ -28,7 +28,7 @@ const Home = ({ route }) => {
   const [loading, setLoading] = useState(false);
   const [userPlaylist, setUserPlaylist] = useState({});
 
-  const getUserData = async () => {
+  const getUserData = async (token) => {
     try {
       const response = await axios.get(
         `${constants.SERVER_URL}/spotify-user?token=${token}`
