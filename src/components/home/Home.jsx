@@ -89,7 +89,7 @@ const Home = ({ route }) => {
 
   const getPlaylist = async (weatherData) => {
     try {
-      const res = await axios.get(`${constants.SERVER_URL}/playlist?token=${token}&weather_cond=${weatherData.currentConditions.icon}`);
+      const res = await axios.get(`${constants.SERVER_URL}/playlist?weather_cond=${weatherData.currentConditions.icon}`);
       setUserPlaylist(res.data);
 
     } catch (error) {
@@ -169,13 +169,11 @@ const Home = ({ route }) => {
                 cardBackgroundColor={cardBackgroundColor}
               />
             </View>
+            <View style={styles.musicPlayerBox}>
+              <MusicPlayer userPlaylist={userPlaylist} />
+            </View>
           </>
         )}
-
-        <View style={styles.musicPlayerBox}>
-          <MusicPlayer token={token} userPlaylist={userPlaylist} />
-        </View>
-
       </SafeAreaView>
     );
   }
