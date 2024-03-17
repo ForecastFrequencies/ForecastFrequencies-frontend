@@ -3,7 +3,7 @@
     "name": "ForecastFrequencies",
     "slug": "ForecastFrequencies",
     "version": "1.0.0",
-    "scheme":"ForecastFrequencies",
+    "scheme": "ForecastFrequencies",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,16 +16,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ngavi.ForecastFrequencies"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ngavi.ForecastFrequencies"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8ac15f86-7c07-4b40-a420-bc73b9dc596b"
+      }
     }
   }
 }

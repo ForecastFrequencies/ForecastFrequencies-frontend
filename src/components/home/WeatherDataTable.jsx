@@ -58,6 +58,7 @@ const WeatherDataTable = ({
 
 const styles = {
   container: {
+    
     paddingTop: 10,
 
   },

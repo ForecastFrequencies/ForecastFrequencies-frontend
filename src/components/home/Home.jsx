@@ -1,4 +1,4 @@
-import { StyleSheet, View, SafeAreaView } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import { Text, Divider } from 'react-native-paper';
@@ -10,6 +10,7 @@ import tinycolor from 'tinycolor2';
 import CurrentWeatherInfo from './CurrentWeatherInfo';
 import WeatherDataTable from './WeatherDataTable';
 
+const { height } = Dimensions.get('window');
 const Home = ({ route }) => {
   const { location } = route.params;
   const [token, setToken] = useState('');
@@ -63,9 +64,14 @@ const Home = ({ route }) => {
 
   const getPlaylist = async (weatherData) => {
     try {
+<<<<<<< Updated upstream
       const res = await axios.get(`${constants.SERVER_URL}/playlist?weather_cond=${weatherData.currentConditions.icon}`);
+=======
+      const res = await axios.get(
+        `${constants.SERVER_URL}/playlist?token=${token}&weather_cond=${weatherData.currentConditions.icon}`
+      );
+>>>>>>> Stashed changes
       setUserPlaylist(res.data);
-
     } catch (error) {
       console.log('Failed to fetch user playlist: ', error.code);
     }
@@ -143,13 +149,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   currentWeatherInfo: {
-    flex: 2,
+    flex: 3,
+    maxHeight: height / 3,
+    backgroundColor: 'red',
+    
   },
   weatherDataTable: {
-   
     flex: 1,
+    maxHeight: height / 3,
+    backgroundColor: 'white',
   },
   musicPlayerBox: {
     flex: 1,
+    backgroundColor: 'red',
+    maxHeight: height / 3,
   },
 });
